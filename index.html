@@ -1,0 +1,1788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Attendance Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f9ff;
+        }
+        .navbar {
+            background-color: #3b82f6;
+        }
+        .sidebar {
+            background-color: #60a5fa;
+            min-height: calc(100vh - 64px);
+        }
+        .active-nav {
+            background-color: #2563eb;
+            color: white;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            background-color: #3b82f6;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+        .btn-danger {
+            background-color: #ef4444;
+        }
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+        .btn-success {
+            background-color: #10b981;
+        }
+        .btn-success:hover {
+            background-color: #059669;
+        }
+        .attendance-present {
+            background-color: #d1fae5;
+        }
+        .attendance-absent {
+            background-color: #fee2e2;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                min-height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen flex flex-col">
+        <!-- Navbar -->
+        <nav class="navbar shadow-md">
+            <div class="container mx-auto px-4 py-3">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <i class="bi bi-mortarboard-fill text-white text-2xl"></i>
+                        <h1 class="text-white text-xl ml-2 font-bold">College Attendance System</h1>
+                    </div>
+                    <div class="hidden md:flex items-center space-x-4">
+                        <span class="text-white">Welcome, Admin</span>
+                        <button class="bg-white text-blue-600 px-3 py-1 rounded-md hover:bg-gray-100">
+                            <i class="bi bi-box-arrow-right mr-1"></i> Logout
+                        </button>
+                    </div>
+                    <div class="md:hidden">
+                        <button id="mobile-menu-button" class="text-white">
+                            <i class="bi bi-list text-2xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden hidden bg-blue-400 text-white">
+            <div class="container mx-auto px-4 py-2">
+                <div class="flex flex-col space-y-2">
+                    <a href="#" class="py-2 px-4 rounded hover:bg-blue-500" data-page="dashboard">Dashboard</a>
+                    <a href="#" class="py-2 px-4 rounded hover:bg-blue-500" data-page="students">Students</a>
+                    <a href="#" class="py-2 px-4 rounded hover:bg-blue-500" data-page="subjects">Subjects</a>
+                    <a href="#" class="py-2 px-4 rounded hover:bg-blue-500" data-page="timetable">Timetable</a>
+                    <a href="#" class="py-2 px-4 rounded hover:bg-blue-500" data-page="attendance">Attendance</a>
+                    <a href="#" class="py-2 px-4 rounded hover:bg-blue-500" data-page="reports">Reports</a>
+                    <div class="border-t border-blue-500 mt-2 pt-2">
+                        <span>Welcome, Admin</span>
+                        <button class="mt-2 bg-white text-blue-600 px-3 py-1 rounded-md hover:bg-gray-100 w-full text-left">
+                            <i class="bi bi-box-arrow-right mr-1"></i> Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-col md:flex-row flex-1">
+            <!-- Sidebar -->
+            <div class="sidebar w-full md:w-64 text-white p-4 hidden md:block">
+                <div class="space-y-2">
+                    <a href="#" class="block py-2 px-4 rounded hover:bg-blue-500 active-nav" data-page="dashboard">
+                        <i class="bi bi-speedometer2 mr-2"></i> Dashboard
+                    </a>
+                    <a href="#" class="block py-2 px-4 rounded hover:bg-blue-500" data-page="students">
+                        <i class="bi bi-people mr-2"></i> Students
+                    </a>
+                    <a href="#" class="block py-2 px-4 rounded hover:bg-blue-500" data-page="subjects">
+                        <i class="bi bi-book mr-2"></i> Subjects
+                    </a>
+                    <a href="#" class="block py-2 px-4 rounded hover:bg-blue-500" data-page="timetable">
+                        <i class="bi bi-calendar3 mr-2"></i> Timetable
+                    </a>
+                    <a href="#" class="block py-2 px-4 rounded hover:bg-blue-500" data-page="attendance">
+                        <i class="bi bi-check2-square mr-2"></i> Attendance
+                    </a>
+                    <a href="#" class="block py-2 px-4 rounded hover:bg-blue-500" data-page="reports">
+                        <i class="bi bi-bar-chart mr-2"></i> Reports
+                    </a>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="flex-1 p-4 md:p-6 overflow-y-auto">
+                <!-- Dashboard -->
+                <div id="dashboard" class="page active">
+                    <h2 class="text-2xl font-semibold mb-6">Dashboard</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                        <div class="card p-4">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-gray-500">Total Students</p>
+                                    <h3 class="text-2xl font-semibold" id="total-students">0</h3>
+                                </div>
+                                <div class="bg-blue-100 p-3 rounded-full">
+                                    <i class="bi bi-people text-blue-500 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card p-4">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-gray-500">Total Subjects</p>
+                                    <h3 class="text-2xl font-semibold" id="total-subjects">0</h3>
+                                </div>
+                                <div class="bg-green-100 p-3 rounded-full">
+                                    <i class="bi bi-book text-green-500 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card p-4">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-gray-500">Today's Classes</p>
+                                    <h3 class="text-2xl font-semibold" id="today-classes">0</h3>
+                                </div>
+                                <div class="bg-yellow-100 p-3 rounded-full">
+                                    <i class="bi bi-calendar-check text-yellow-500 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card p-4">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-gray-500">Average Attendance</p>
+                                    <h3 class="text-2xl font-semibold" id="avg-attendance">0%</h3>
+                                </div>
+                                <div class="bg-red-100 p-3 rounded-full">
+                                    <i class="bi bi-graph-up text-red-500 text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="card p-4">
+                            <h3 class="font-semibold text-lg mb-4">Recent Attendance</h3>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full">
+                                    <thead>
+                                        <tr class="border-b">
+                                            <th class="py-2 text-left">Date</th>
+                                            <th class="py-2 text-left">Subject</th>
+                                            <th class="py-2 text-left">Present/Total</th>
+                                            <th class="py-2 text-left">Percentage</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="recent-attendance">
+                                        <tr class="text-gray-400 italic">
+                                            <td colspan="4" class="py-4 text-center">No attendance records found</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card p-4">
+                            <h3 class="font-semibold text-lg mb-4">Today's Schedule</h3>
+                            <div id="today-schedule" class="space-y-3">
+                                <p class="text-gray-400 italic text-center py-4">No classes scheduled for today</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Students -->
+                <div id="students" class="page hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-semibold">Students Management</h2>
+                        <button id="add-student-btn" class="btn-primary text-white px-4 py-2 rounded-md">
+                            <i class="bi bi-plus-lg mr-1"></i> Add Student
+                        </button>
+                    </div>
+
+                    <div class="card p-4 mb-6">
+                        <div class="flex flex-col md:flex-row gap-4 mb-4">
+                            <div class="flex-1">
+                                <input type="text" id="student-search" placeholder="Search by name, ID, or class..." 
+                                    class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <select id="filter-class" class="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">All Classes</option>
+                                    <option value="CS-101">CS-101</option>
+                                    <option value="Math-201">Math-201</option>
+                                    <option value="Physics-301">Physics-301</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full">
+                                <thead>
+                                    <tr class="border-b">
+                                        <th class="py-2 text-left">Student ID</th>
+                                        <th class="py-2 text-left">Name</th>
+                                        <th class="py-2 text-left">Class</th>
+                                        <th class="py-2 text-left">Email</th>
+                                        <th class="py-2 text-left">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="students-table">
+                                    <tr class="text-gray-400 italic">
+                                        <td colspan="5" class="py-4 text-center">No students found</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add/Edit Student Modal -->
+                <div id="student-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+                    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+                        <h3 id="student-modal-title" class="text-xl font-semibold mb-4">Add New Student</h3>
+                        <form id="student-form">
+                            <input type="hidden" id="student-id">
+                            <div class="mb-4">
+                                <label for="student-name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                                <input type="text" id="student-name" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                            </div>
+                            <div class="mb-4">
+                                <label for="student-class" class="block text-sm font-medium text-gray-700 mb-1">Class</label>
+                                <input type="text" id="student-class" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                            </div>
+                            <div class="mb-4">
+                                <label for="student-email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                <input type="email" id="student-email" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                            </div>
+                            <div class="mb-4">
+                                <label for="student-phone" class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                                <input type="tel" id="student-phone" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div class="flex justify-end gap-2">
+                                <button type="button" id="cancel-student" class="px-4 py-2 border rounded-md hover:bg-gray-100">Cancel</button>
+                                <button type="submit" class="btn-primary text-white px-4 py-2 rounded-md">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Subjects -->
+                <div id="subjects" class="page hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-semibold">Subjects Management</h2>
+                        <button id="add-subject-btn" class="btn-primary text-white px-4 py-2 rounded-md">
+                            <i class="bi bi-plus-lg mr-1"></i> Add Subject
+                        </button>
+                    </div>
+
+                    <div class="card p-4 mb-6">
+                        <div class="flex flex-col md:flex-row gap-4 mb-4">
+                            <div class="flex-1">
+                                <input type="text" id="subject-search" placeholder="Search by code or name..." 
+                                    class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <select id="filter-semester" class="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">All Semesters</option>
+                                    <option value="1">Semester 1</option>
+                                    <option value="2">Semester 2</option>
+                                    <option value="3">Semester 3</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full">
+                                <thead>
+                                    <tr class="border-b">
+                                        <th class="py-2 text-left">Subject Code</th>
+                                        <th class="py-2 text-left">Name</th>
+                                        <th class="py-2 text-left">Semester</th>
+                                        <th class="py-2 text-left">Professor</th>
+                                        <th class="py-2 text-left">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="subjects-table">
+                                    <tr class="text-gray-400 italic">
+                                        <td colspan="5" class="py-4 text-center">No subjects found</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add/Edit Subject Modal -->
+                <div id="subject-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+                    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+                        <h3 id="subject-modal-title" class="text-xl font-semibold mb-4">Add New Subject</h3>
+                        <form id="subject-form">
+                            <input type="hidden" id="subject-id">
+                            <div class="mb-4">
+                                <label for="subject-code" class="block text-sm font-medium text-gray-700 mb-1">Subject Code</label>
+                                <input type="text" id="subject-code" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                            </div>
+                            <div class="mb-4">
+                                <label for="subject-name" class="block text-sm font-medium text-gray-700 mb-1">Subject Name</label>
+                                <input type="text" id="subject-name" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                            </div>
+                            <div class="mb-4">
+                                <label for="subject-semester" class="block text-sm font-medium text-gray-700 mb-1">Semester</label>
+                                <select id="subject-semester" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                                    <option value="">Select Semester</option>
+                                    <option value="1">Semester 1</option>
+                                    <option value="2">Semester 2</option>
+                                    <option value="3">Semester 3</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label for="subject-professor" class="block text-sm font-medium text-gray-700 mb-1">Professor</label>
+                                <input type="text" id="subject-professor" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                            </div>
+                            <div class="flex justify-end gap-2">
+                                <button type="button" id="cancel-subject" class="px-4 py-2 border rounded-md hover:bg-gray-100">Cancel</button>
+                                <button type="submit" class="btn-primary text-white px-4 py-2 rounded-md">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Timetable -->
+                <div id="timetable" class="page hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-semibold">Class Timetable</h2>
+                        <button id="add-class-btn" class="btn-primary text-white px-4 py-2 rounded-md">
+                            <i class="bi bi-plus-lg mr-1"></i> Add Class
+                        </button>
+                    </div>
+
+                    <div class="card p-4 mb-6">
+                        <div class="flex flex-col md:flex-row gap-4 mb-4">
+                            <div>
+                                <label for="timetable-class" class="block text-sm font-medium text-gray-700 mb-1">Select Class</label>
+                                <select id="timetable-class" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">All Classes</option>
+                                    <option value="CS-101">CS-101</option>
+                                    <option value="Math-201">Math-201</option>
+                                    <option value="Physics-301">Physics-301</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto mt-4">
+                            <table class="min-w-full border">
+                                <thead>
+                                    <tr class="bg-gray-100">
+                                        <th class="border p-2 text-sm">Time</th>
+                                        <th class="border p-2 text-sm">Monday</th>
+                                        <th class="border p-2 text-sm">Tuesday</th>
+                                        <th class="border p-2 text-sm">Wednesday</th>
+                                        <th class="border p-2 text-sm">Thursday</th>
+                                        <th class="border p-2 text-sm">Friday</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="timetable-body">
+                                    <tr>
+                                        <td class="border p-2 text-sm font-medium">9:00 - 10:00</td>
+                                        <td class="border p-2 timetable-cell" data-day="monday" data-time="9:00-10:00"></td>
+                                        <td class="border p-2 timetable-cell" data-day="tuesday" data-time="9:00-10:00"></td>
+                                        <td class="border p-2 timetable-cell" data-day="wednesday" data-time="9:00-10:00"></td>
+                                        <td class="border p-2 timetable-cell" data-day="thursday" data-time="9:00-10:00"></td>
+                                        <td class="border p-2 timetable-cell" data-day="friday" data-time="9:00-10:00"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border p-2 text-sm font-medium">10:00 - 11:00</td>
+                                        <td class="border p-2 timetable-cell" data-day="monday" data-time="10:00-11:00"></td>
+                                        <td class="border p-2 timetable-cell" data-day="tuesday" data-time="10:00-11:00"></td>
+                                        <td class="border p-2 timetable-cell" data-day="wednesday" data-time="10:00-11:00"></td>
+                                        <td class="border p-2 timetable-cell" data-day="thursday" data-time="10:00-11:00"></td>
+                                        <td class="border p-2 timetable-cell" data-day="friday" data-time="10:00-11:00"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border p-2 text-sm font-medium">11:00 - 12:00</td>
+                                        <td class="border p-2 timetable-cell" data-day="monday" data-time="11:00-12:00"></td>
+                                        <td class="border p-2 timetable-cell" data-day="tuesday" data-time="11:00-12:00"></td>
+                                        <td class="border p-2 timetable-cell" data-day="wednesday" data-time="11:00-12:00"></td>
+                                        <td class="border p-2 timetable-cell" data-day="thursday" data-time="11:00-12:00"></td>
+                                        <td class="border p-2 timetable-cell" data-day="friday" data-time="11:00-12:00"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border p-2 text-sm font-medium">12:00 - 1:00</td>
+                                        <td class="border p-2 text-sm text-center bg-gray-100" colspan="5">Lunch Break</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border p-2 text-sm font-medium">1:00 - 2:00</td>
+                                        <td class="border p-2 timetable-cell" data-day="monday" data-time="1:00-2:00"></td>
+                                        <td class="border p-2 timetable-cell" data-day="tuesday" data-time="1:00-2:00"></td>
+                                        <td class="border p-2 timetable-cell" data-day="wednesday" data-time="1:00-2:00"></td>
+                                        <td class="border p-2 timetable-cell" data-day="thursday" data-time="1:00-2:00"></td>
+                                        <td class="border p-2 timetable-cell" data-day="friday" data-time="1:00-2:00"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border p-2 text-sm font-medium">2:00 - 3:00</td>
+                                        <td class="border p-2 timetable-cell" data-day="monday" data-time="2:00-3:00"></td>
+                                        <td class="border p-2 timetable-cell" data-day="tuesday" data-time="2:00-3:00"></td>
+                                        <td class="border p-2 timetable-cell" data-day="wednesday" data-time="2:00-3:00"></td>
+                                        <td class="border p-2 timetable-cell" data-day="thursday" data-time="2:00-3:00"></td>
+                                        <td class="border p-2 timetable-cell" data-day="friday" data-time="2:00-3:00"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border p-2 text-sm font-medium">3:00 - 4:00</td>
+                                        <td class="border p-2 timetable-cell" data-day="monday" data-time="3:00-4:00"></td>
+                                        <td class="border p-2 timetable-cell" data-day="tuesday" data-time="3:00-4:00"></td>
+                                        <td class="border p-2 timetable-cell" data-day="wednesday" data-time="3:00-4:00"></td>
+                                        <td class="border p-2 timetable-cell" data-day="thursday" data-time="3:00-4:00"></td>
+                                        <td class="border p-2 timetable-cell" data-day="friday" data-time="3:00-4:00"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add Class Modal -->
+                <div id="class-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+                    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+                        <h3 class="text-xl font-semibold mb-4">Add Class to Timetable</h3>
+                        <form id="class-form">
+                            <div class="mb-4">
+                                <label for="class-subject" class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                                <select id="class-subject" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                                    <option value="">Select Subject</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label for="class-day" class="block text-sm font-medium text-gray-700 mb-1">Day</label>
+                                <select id="class-day" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                                    <option value="">Select Day</option>
+                                    <option value="monday">Monday</option>
+                                    <option value="tuesday">Tuesday</option>
+                                    <option value="wednesday">Wednesday</option>
+                                    <option value="thursday">Thursday</option>
+                                    <option value="friday">Friday</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label for="class-time" class="block text-sm font-medium text-gray-700 mb-1">Time</label>
+                                <select id="class-time" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                                    <option value="">Select Time</option>
+                                    <option value="9:00-10:00">9:00 - 10:00</option>
+                                    <option value="10:00-11:00">10:00 - 11:00</option>
+                                    <option value="11:00-12:00">11:00 - 12:00</option>
+                                    <option value="1:00-2:00">1:00 - 2:00</option>
+                                    <option value="2:00-3:00">2:00 - 3:00</option>
+                                    <option value="3:00-4:00">3:00 - 4:00</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label for="class-room" class="block text-sm font-medium text-gray-700 mb-1">Classroom</label>
+                                <input type="text" id="class-room" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                            </div>
+                            <div class="flex justify-end gap-2">
+                                <button type="button" id="cancel-class" class="px-4 py-2 border rounded-md hover:bg-gray-100">Cancel</button>
+                                <button type="submit" class="btn-primary text-white px-4 py-2 rounded-md">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Attendance -->
+                <div id="attendance" class="page hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-semibold">Attendance Management</h2>
+                    </div>
+
+                    <div class="card p-4 mb-6">
+                        <div class="flex flex-col md:flex-row gap-4 mb-6">
+                            <div class="flex-1">
+                                <label for="attendance-subject" class="block text-sm font-medium text-gray-700 mb-1">Select Subject</label>
+                                <select id="attendance-subject" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                                    <option value="">Select Subject</option>
+                                </select>
+                            </div>
+                            <div class="flex-1">
+                                <label for="attendance-date" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                                <input type="date" id="attendance-date" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                            </div>
+                        </div>
+
+                        <div id="attendance-list" class="hidden">
+                            <h3 class="font-semibold mb-4">Mark Attendance</h3>
+                            <div id="attendance-students" class="space-y-3">
+                                <!-- Students will be listed here -->
+                            </div>
+                            <div class="mt-6 flex justify-end">
+                                <button id="save-attendance" class="btn-primary text-white px-4 py-2 rounded-md">
+                                    Save Attendance
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div id="attendance-empty" class="text-center py-6">
+                            <p class="text-gray-500">Please select a subject and date to mark attendance</p>
+                        </div>
+                    </div>
+
+                    <div class="card p-4">
+                        <h3 class="font-semibold mb-4">Past Attendance Records</h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full">
+                                <thead>
+                                    <tr class="border-b">
+                                        <th class="py-2 text-left">Date</th>
+                                        <th class="py-2 text-left">Subject</th>
+                                        <th class="py-2 text-left">Present/Total</th>
+                                        <th class="py-2 text-left">Percentage</th>
+                                        <th class="py-2 text-left">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="attendance-records">
+                                    <tr class="text-gray-400 italic">
+                                        <td colspan="5" class="py-4 text-center">No attendance records found</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reports -->
+                <div id="reports" class="page hidden">
+                    <div class="mb-6">
+                        <h2 class="text-2xl font-semibold">Attendance Reports</h2>
+                    </div>
+
+                    <div class="card p-4 mb-6">
+                        <h3 class="font-semibold mb-4">Generate Report</h3>
+                        <div class="flex flex-col md:flex-row gap-4 mb-4">
+                            <div class="flex-1">
+                                <label for="report-type" class="block text-sm font-medium text-gray-700 mb-1">Report Type</label>
+                                <select id="report-type" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="student">Student-wise</option>
+                                    <option value="subject">Subject-wise</option>
+                                    <option value="class">Class-wise</option>
+                                </select>
+                            </div>
+                            <div class="flex-1">
+                                <label for="report-subject" class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                                <select id="report-subject" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">All Subjects</option>
+                                </select>
+                            </div>
+                            <div class="flex-1">
+                                <label for="report-class" class="block text-sm font-medium text-gray-700 mb-1">Class</label>
+                                <select id="report-class" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">All Classes</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex flex-col md:flex-row gap-4 mb-4">
+                            <div class="flex-1">
+                                <label for="report-from" class="block text-sm font-medium text-gray-700 mb-1">From Date</label>
+                                <input type="date" id="report-from" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div class="flex-1">
+                                <label for="report-to" class="block text-sm font-medium text-gray-700 mb-1">To Date</label>
+                                <input type="date" id="report-to" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div class="flex-1 flex items-end">
+                                <button id="generate-report" class="btn-primary text-white px-4 py-2 rounded-md w-full">
+                                    Generate Report
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card p-4">
+                        <h3 class="font-semibold mb-4">Report Results</h3>
+                        <div id="report-results" class="overflow-x-auto">
+                            <div class="text-center py-6 text-gray-500">
+                                <i class="bi bi-file-earmark-text text-3xl mb-2"></i>
+                                <p>Select parameters and generate a report to view results</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize local storage with some demo data if it doesn't exist
+            if (!localStorage.getItem('students')) {
+                localStorage.setItem('students', JSON.stringify([
+                    { id: '2023001', name: 'John Doe', class: 'CS-101', email: 'john.doe@example.com', phone: '555-123-4567' },
+                    { id: '2023002', name: 'Jane Smith', class: 'CS-101', email: 'jane.smith@example.com', phone: '555-987-6543' },
+                    { id: '2023003', name: 'Alex Johnson', class: 'Math-201', email: 'alex.johnson@example.com', phone: '555-456-7890' }
+                ]));
+            }
+
+            if (!localStorage.getItem('subjects')) {
+                localStorage.setItem('subjects', JSON.stringify([
+                    { id: 'CS101', code: 'CS101', name: 'Introduction to Programming', semester: '1', professor: 'Dr. Alan Turing' },
+                    { id: 'MATH201', code: 'MATH201', name: 'Calculus', semester: '2', professor: 'Dr. Katherine Johnson' },
+                    { id: 'PHY301', code: 'PHY301', name: 'Physics', semester: '3', professor: 'Dr. Richard Feynman' }
+                ]));
+            }
+
+            if (!localStorage.getItem('timetable')) {
+                localStorage.setItem('timetable', JSON.stringify([
+                    { subject: 'CS101', day: 'monday', time: '9:00-10:00', room: 'Room 101' },
+                    { subject: 'MATH201', day: 'wednesday', time: '11:00-12:00', room: 'Room 202' },
+                    { subject: 'PHY301', day: 'friday', time: '2:00-3:00', room: 'Lab 303' }
+                ]));
+            }
+
+            if (!localStorage.getItem('attendance')) {
+                localStorage.setItem('attendance', JSON.stringify([
+                    {
+                        date: '2023-09-15',
+                        subject: 'CS101',
+                        records: [
+                            { studentId: '2023001', present: true },
+                            { studentId: '2023002', present: true },
+                            { studentId: '2023003', present: false }
+                        ]
+                    },
+                    {
+                        date: '2023-09-16',
+                        subject: 'MATH201',
+                        records: [
+                            { studentId: '2023001', present: false },
+                            { studentId: '2023002', present: true },
+                            { studentId: '2023003', present: true }
+                        ]
+                    }
+                ]));
+            }
+
+            // Mobile menu toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // Navigation
+            const navLinks = document.querySelectorAll('a[data-page]');
+            const pages = document.querySelectorAll('.page');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetPage = this.getAttribute('data-page');
+                    
+                    // Hide all pages
+                    pages.forEach(page => {
+                        page.classList.add('hidden');
+                        page.classList.remove('active');
+                    });
+                    
+                    // Show target page
+                    const activePage = document.getElementById(targetPage);
+                    if (activePage) {
+                        activePage.classList.remove('hidden');
+                        activePage.classList.add('active');
+                    }
+                    
+                    // Update active nav link
+                    navLinks.forEach(navLink => {
+                        navLink.classList.remove('active-nav');
+                    });
+                    
+                    // Find all nav links for this page and add active class
+                    document.querySelectorAll(`a[data-page="${targetPage}"]`).forEach(activeLink => {
+                        activeLink.classList.add('active-nav');
+                    });
+                    
+                    // Hide mobile menu after navigation
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+
+            // Load initial data
+            loadDashboard();
+            loadStudentsTable();
+            loadSubjectsTable();
+            loadTimetable();
+            loadSubjectsDropdown();
+            updateAttendanceRecords();
+
+            // Student management
+            const addStudentBtn = document.getElementById('add-student-btn');
+            const studentModal = document.getElementById('student-modal');
+            const studentForm = document.getElementById('student-form');
+            const cancelStudentBtn = document.getElementById('cancel-student');
+            const studentSearch = document.getElementById('student-search');
+            const filterClass = document.getElementById('filter-class');
+
+            addStudentBtn.addEventListener('click', function() {
+                document.getElementById('student-modal-title').textContent = 'Add New Student';
+                document.getElementById('student-id').value = '';
+                document.getElementById('student-name').value = '';
+                document.getElementById('student-class').value = '';
+                document.getElementById('student-email').value = '';
+                document.getElementById('student-phone').value = '';
+                studentModal.classList.remove('hidden');
+            });
+
+            cancelStudentBtn.addEventListener('click', function() {
+                studentModal.classList.add('hidden');
+            });
+
+            studentForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const studentId = document.getElementById('student-id').value;
+                const name = document.getElementById('student-name').value;
+                const studentClass = document.getElementById('student-class').value;
+                const email = document.getElementById('student-email').value;
+                const phone = document.getElementById('student-phone').value;
+                
+                const students = JSON.parse(localStorage.getItem('students')) || [];
+                
+                if (studentId) {
+                    // Edit existing student
+                    const index = students.findIndex(student => student.id === studentId);
+                    if (index !== -1) {
+                        students[index] = { id: studentId, name, class: studentClass, email, phone };
+                    }
+                } else {
+                    // Add new student
+                    const newId = generateStudentId();
+                    students.push({ id: newId, name, class: studentClass, email, phone });
+                }
+                
+                localStorage.setItem('students', JSON.stringify(students));
+                studentModal.classList.add('hidden');
+                loadStudentsTable();
+                loadDashboard();
+            });
+
+            // Search and filter students
+            studentSearch.addEventListener('input', loadStudentsTable);
+            filterClass.addEventListener('change', loadStudentsTable);
+
+            // Subject management
+            const addSubjectBtn = document.getElementById('add-subject-btn');
+            const subjectModal = document.getElementById('subject-modal');
+            const subjectForm = document.getElementById('subject-form');
+            const cancelSubjectBtn = document.getElementById('cancel-subject');
+            const subjectSearch = document.getElementById('subject-search');
+            const filterSemester = document.getElementById('filter-semester');
+
+            addSubjectBtn.addEventListener('click', function() {
+                document.getElementById('subject-modal-title').textContent = 'Add New Subject';
+                document.getElementById('subject-id').value = '';
+                document.getElementById('subject-code').value = '';
+                document.getElementById('subject-name').value = '';
+                document.getElementById('subject-semester').value = '';
+                document.getElementById('subject-professor').value = '';
+                subjectModal.classList.remove('hidden');
+            });
+
+            cancelSubjectBtn.addEventListener('click', function() {
+                subjectModal.classList.add('hidden');
+            });
+
+            subjectForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const subjectId = document.getElementById('subject-id').value;
+                const code = document.getElementById('subject-code').value;
+                const name = document.getElementById('subject-name').value;
+                const semester = document.getElementById('subject-semester').value;
+                const professor = document.getElementById('subject-professor').value;
+                
+                const subjects = JSON.parse(localStorage.getItem('subjects')) || [];
+                
+                if (subjectId) {
+                    // Edit existing subject
+                    const index = subjects.findIndex(subject => subject.id === subjectId);
+                    if (index !== -1) {
+                        subjects[index] = { id: subjectId, code, name, semester, professor };
+                    }
+                } else {
+                    // Add new subject
+                    subjects.push({ id: code, code, name, semester, professor });
+                }
+                
+                localStorage.setItem('subjects', JSON.stringify(subjects));
+                subjectModal.classList.add('hidden');
+                loadSubjectsTable();
+                loadSubjectsDropdown();
+                loadDashboard();
+            });
+
+            // Search and filter subjects
+            subjectSearch.addEventListener('input', loadSubjectsTable);
+            filterSemester.addEventListener('change', loadSubjectsTable);
+
+            // Timetable management
+            const addClass = document.getElementById('add-class-btn');
+            const classModal = document.getElementById('class-modal');
+            const classForm = document.getElementById('class-form');
+            const cancelClass = document.getElementById('cancel-class');
+            const timetableClassFilter = document.getElementById('timetable-class');
+
+            addClass.addEventListener('click', function() {
+                classModal.classList.remove('hidden');
+                
+                // Populate subjects dropdown
+                const subjectSelect = document.getElementById('class-subject');
+                subjectSelect.innerHTML = '<option value="">Select Subject</option>';
+                const subjects = JSON.parse(localStorage.getItem('subjects')) || [];
+                subjects.forEach(subject => {
+                    const option = document.createElement('option');
+                    option.value = subject.id;
+                    option.textContent = `${subject.code} - ${subject.name}`;
+                    subjectSelect.appendChild(option);
+                });
+            });
+
+            cancelClass.addEventListener('click', function() {
+                classModal.classList.add('hidden');
+            });
+
+            classForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const subject = document.getElementById('class-subject').value;
+                const day = document.getElementById('class-day').value;
+                const time = document.getElementById('class-time').value;
+                const room = document.getElementById('class-room').value;
+                
+                if (!subject || !day || !time || !room) {
+                    alert('Please fill in all fields');
+                    return;
+                }
+                
+                const timetable = JSON.parse(localStorage.getItem('timetable')) || [];
+                
+                // Check if the slot is already taken
+                const slotTaken = timetable.some(entry => entry.day === day && entry.time === time);
+                
+                if (slotTaken) {
+                    alert('This time slot is already taken. Please choose another.');
+                    return;
+                }
+                
+                timetable.push({ subject, day, time, room });
+                localStorage.setItem('timetable', JSON.stringify(timetable));
+                
+                classModal.classList.add('hidden');
+                loadTimetable();
+            });
+
+            timetableClassFilter.addEventListener('change', loadTimetable);
+
+            // Attendance management
+            const attendanceSubject = document.getElementById('attendance-subject');
+            const attendanceDate = document.getElementById('attendance-date');
+            const attendanceList = document.getElementById('attendance-list');
+            const attendanceEmpty = document.getElementById('attendance-empty');
+            const saveAttendance = document.getElementById('save-attendance');
+
+            // Set default date to today
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            attendanceDate.value = formattedDate;
+
+            attendanceSubject.addEventListener('change', loadAttendanceForm);
+            attendanceDate.addEventListener('change', loadAttendanceForm);
+
+            saveAttendance.addEventListener('click', function() {
+                const subject = attendanceSubject.value;
+                const date = attendanceDate.value;
+                
+                if (!subject || !date) {
+                    alert('Please select subject and date');
+                    return;
+                }
+                
+                const students = document.querySelectorAll('.attendance-student');
+                const records = [];
+                
+                students.forEach(student => {
+                    const studentId = student.getAttribute('data-student-id');
+                    const present = student.querySelector('.attendance-radio-present').checked;
+                    records.push({ studentId, present });
+                });
+                
+                let attendanceData = JSON.parse(localStorage.getItem('attendance')) || [];
+                
+                // Check if attendance for this date and subject already exists
+                const existingIndex = attendanceData.findIndex(
+                    item => item.date === date && item.subject === subject
+                );
+                
+                if (existingIndex !== -1) {
+                    // Update existing attendance
+                    attendanceData[existingIndex].records = records;
+                } else {
+                    // Add new attendance
+                    attendanceData.push({ date, subject, records });
+                }
+                
+                localStorage.setItem('attendance', JSON.stringify(attendanceData));
+                
+                alert('Attendance saved successfully!');
+                updateAttendanceRecords();
+                loadDashboard();
+            });
+
+            // Reports
+            const generateReportBtn = document.getElementById('generate-report');
+            
+            generateReportBtn.addEventListener('click', function() {
+                const reportType = document.getElementById('report-type').value;
+                const subject = document.getElementById('report-subject').value;
+                const className = document.getElementById('report-class').value;
+                const fromDate = document.getElementById('report-from').value;
+                const toDate = document.getElementById('report-to').value;
+                
+                generateReport(reportType, subject, className, fromDate, toDate);
+            });
+
+            // Load report dropdowns
+            loadReportDropdowns();
+
+            // Helper functions
+            function loadDashboard() {
+                const students = JSON.parse(localStorage.getItem('students')) || [];
+                const subjects = JSON.parse(localStorage.getItem('subjects')) || [];
+                const timetable = JSON.parse(localStorage.getItem('timetable')) || [];
+                const attendance = JSON.parse(localStorage.getItem('attendance')) || [];
+                
+                document.getElementById('total-students').textContent = students.length;
+                document.getElementById('total-subjects').textContent = subjects.length;
+                
+                // Get today's day name
+                const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+                const todayName = dayNames[new Date().getDay()];
+                
+                // Count today's classes
+                const todayClasses = timetable.filter(entry => entry.day === todayName);
+                document.getElementById('today-classes').textContent = todayClasses.length;
+                
+                // Calculate average attendance
+                let totalPresent = 0;
+                let totalAttendance = 0;
+                
+                attendance.forEach(record => {
+                    record.records.forEach(student => {
+                        totalAttendance++;
+                        if (student.present) totalPresent++;
+                    });
+                });
+                
+                const avgAttendance = totalAttendance > 0 ? Math.round((totalPresent / totalAttendance) * 100) : 0;
+                document.getElementById('avg-attendance').textContent = `${avgAttendance}%`;
+                
+                // Recent attendance
+                const recentAttendanceEl = document.getElementById('recent-attendance');
+                
+                if (attendance.length > 0) {
+                    let recentAttendanceHtml = '';
+                    
+                    // Sort by date (newest first) and take last 5
+                    const recentAttendance = [...attendance]
+                        .sort((a, b) => new Date(b.date) - new Date(a.date))
+                        .slice(0, 5);
+                    
+                    recentAttendance.forEach(entry => {
+                        const subject = subjects.find(s => s.id === entry.subject) || { name: entry.subject };
+                        const presentCount = entry.records.filter(r => r.present).length;
+                        const totalCount = entry.records.length;
+                        const percentage = Math.round((presentCount / totalCount) * 100);
+                        
+                        recentAttendanceHtml += `
+                            <tr>
+                                <td class="py-2">${formatDate(entry.date)}</td>
+                                <td class="py-2">${subject.name}</td>
+                                <td class="py-2">${presentCount}/${totalCount}</td>
+                                <td class="py-2">${percentage}%</td>
+                            </tr>
+                        `;
+                    });
+                    
+                    recentAttendanceEl.innerHTML = recentAttendanceHtml;
+                } else {
+                    recentAttendanceEl.innerHTML = `
+                        <tr class="text-gray-400 italic">
+                            <td colspan="4" class="py-4 text-center">No attendance records found</td>
+                        </tr>
+                    `;
+                }
+                
+                // Today's schedule
+                const todayScheduleEl = document.getElementById('today-schedule');
+                
+                if (todayClasses.length > 0) {
+                    let scheduleHtml = '';
+                    
+                    // Sort by time
+                    const sortedClasses = [...todayClasses].sort((a, b) => {
+                        return a.time.localeCompare(b.time);
+                    });
+                    
+                    sortedClasses.forEach(cls => {
+                        const subject = subjects.find(s => s.id === cls.subject) || { name: cls.subject, code: cls.subject };
+                        scheduleHtml += `
+                            <div class="p-3 border rounded-md bg-blue-50">
+                                <p class="font-medium">${cls.time}</p>
+                                <p class="text-lg font-semibold">${subject.name}</p>
+                                <div class="flex justify-between mt-1 text-sm text-gray-600">
+                                    <span><i class="bi bi-geo-alt"></i> ${cls.room}</span>
+                                    <span><i class="bi bi-code-square"></i> ${subject.code}</span>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    todayScheduleEl.innerHTML = scheduleHtml;
+                } else {
+                    todayScheduleEl.innerHTML = `<p class="text-gray-400 italic text-center py-4">No classes scheduled for today</p>`;
+                }
+            }
+
+            function loadStudentsTable() {
+                const students = JSON.parse(localStorage.getItem('students')) || [];
+                const tableBody = document.getElementById('students-table');
+                const searchTerm = document.getElementById('student-search').value.toLowerCase();
+                const classFilter = document.getElementById('filter-class').value;
+                
+                let filteredStudents = students;
+                
+                // Apply filters
+                if (searchTerm) {
+                    filteredStudents = filteredStudents.filter(student => 
+                        student.id.toLowerCase().includes(searchTerm) ||
+                        student.name.toLowerCase().includes(searchTerm) ||
+                        student.class.toLowerCase().includes(searchTerm) ||
+                        student.email.toLowerCase().includes(searchTerm)
+                    );
+                }
+                
+                if (classFilter) {
+                    filteredStudents = filteredStudents.filter(student => 
+                        student.class === classFilter
+                    );
+                }
+                
+                if (filteredStudents.length > 0) {
+                    let tableHtml = '';
+                    
+                    filteredStudents.forEach(student => {
+                        tableHtml += `
+                            <tr class="border-b hover:bg-gray-50">
+                                <td class="py-3">${student.id}</td>
+                                <td class="py-3">${student.name}</td>
+                                <td class="py-3">${student.class}</td>
+                                <td class="py-3">${student.email}</td>
+                                <td class="py-3">
+                                    <button class="text-blue-500 hover:text-blue-700 mr-2" onclick="editStudent('${student.id}')">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="text-red-500 hover:text-red-700" onclick="deleteStudent('${student.id}')">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    
+                    tableBody.innerHTML = tableHtml;
+                } else {
+                    tableBody.innerHTML = `
+                        <tr class="text-gray-400 italic">
+                            <td colspan="5" class="py-4 text-center">No students found</td>
+                        </tr>
+                    `;
+                }
+                
+                // Update class filter options
+                const classSelect = document.getElementById('filter-class');
+                const currentValue = classSelect.value;
+                const classes = [...new Set(students.map(student => student.class))];
+                
+                let classOptions = '<option value="">All Classes</option>';
+                classes.forEach(cls => {
+                    classOptions += `<option value="${cls}" ${currentValue === cls ? 'selected' : ''}>${cls}</option>`;
+                });
+                
+                classSelect.innerHTML = classOptions;
+            }
+
+            function loadSubjectsTable() {
+                const subjects = JSON.parse(localStorage.getItem('subjects')) || [];
+                const tableBody = document.getElementById('subjects-table');
+                const searchTerm = document.getElementById('subject-search').value.toLowerCase();
+                const semesterFilter = document.getElementById('filter-semester').value;
+                
+                let filteredSubjects = subjects;
+                
+                // Apply filters
+                if (searchTerm) {
+                    filteredSubjects = filteredSubjects.filter(subject => 
+                        subject.code.toLowerCase().includes(searchTerm) ||
+                        subject.name.toLowerCase().includes(searchTerm) ||
+                        subject.professor.toLowerCase().includes(searchTerm)
+                    );
+                }
+                
+                if (semesterFilter) {
+                    filteredSubjects = filteredSubjects.filter(subject => 
+                        subject.semester === semesterFilter
+                    );
+                }
+                
+                if (filteredSubjects.length > 0) {
+                    let tableHtml = '';
+                    
+                    filteredSubjects.forEach(subject => {
+                        tableHtml += `
+                            <tr class="border-b hover:bg-gray-50">
+                                <td class="py-3">${subject.code}</td>
+                                <td class="py-3">${subject.name}</td>
+                                <td class="py-3">Semester ${subject.semester}</td>
+                                <td class="py-3">${subject.professor}</td>
+                                <td class="py-3">
+                                    <button class="text-blue-500 hover:text-blue-700 mr-2" onclick="editSubject('${subject.id}')">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="text-red-500 hover:text-red-700" onclick="deleteSubject('${subject.id}')">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    
+                    tableBody.innerHTML = tableHtml;
+                } else {
+                    tableBody.innerHTML = `
+                        <tr class="text-gray-400 italic">
+                            <td colspan="5" class="py-4 text-center">No subjects found</td>
+                        </tr>
+                    `;
+                }
+            }
+
+            function loadTimetable() {
+                const timetable = JSON.parse(localStorage.getItem('timetable')) || [];
+                const subjects = JSON.parse(localStorage.getItem('subjects')) || [];
+                const classFilter = document.getElementById('timetable-class').value;
+                
+                // Reset timetable cells
+                document.querySelectorAll('.timetable-cell').forEach(cell => {
+                    cell.innerHTML = '';
+                    cell.classList.remove('bg-blue-100', 'border-blue-200');
+                });
+                
+                // Filter timetable entries by class if needed
+                let filteredTimetable = timetable;
+                
+                if (classFilter) {
+                    const subjectsForClass = subjects.filter(subject => 
+                        subject.name.includes(classFilter) || subject.code.includes(classFilter)
+                    ).map(subject => subject.id);
+                    
+                    filteredTimetable = timetable.filter(entry => 
+                        subjectsForClass.includes(entry.subject)
+                    );
+                }
+                
+                // Populate timetable
+                filteredTimetable.forEach(entry => {
+                    const cell = document.querySelector(`.timetable-cell[data-day="${entry.day}"][data-time="${entry.time}"]`);
+                    if (cell) {
+                        const subject = subjects.find(s => s.id === entry.subject) || { name: entry.subject, code: entry.subject };
+                        cell.classList.add('bg-blue-100', 'border-blue-200');
+                        cell.innerHTML = `
+                            <div class="text-sm font-semibold">${subject.name}</div>
+                            <div class="text-xs">${subject.code}</div>
+                            <div class="text-xs">${entry.room}</div>
+                            <button class="text-red-500 hover:text-red-700 text-xs mt-1" onclick="deleteTimetableEntry('${entry.day}', '${entry.time}')">
+                                <i class="bi bi-x-circle"></i> Remove
+                            </button>
+                        `;
+                    }
+                });
+            }
+
+            function loadSubjectsDropdown() {
+                const subjects = JSON.parse(localStorage.getItem('subjects')) || [];
+                const attendanceSubject = document.getElementById('attendance-subject');
+                const reportSubject = document.getElementById('report-subject');
+                
+                // Clear current options
+                attendanceSubject.innerHTML = '<option value="">Select Subject</option>';
+                reportSubject.innerHTML = '<option value="">All Subjects</option>';
+                
+                // Populate options
+                subjects.forEach(subject => {
+                    // Attendance dropdown
+                    const option1 = document.createElement('option');
+                    option1.value = subject.id;
+                    option1.textContent = `${subject.code} - ${subject.name}`;
+                    attendanceSubject.appendChild(option1);
+                    
+                    // Report dropdown
+                    const option2 = document.createElement('option');
+                    option2.value = subject.id;
+                    option2.textContent = `${subject.code} - ${subject.name}`;
+                    reportSubject.appendChild(option2);
+                });
+                
+                // Populate class select for reports
+                const reportClass = document.getElementById('report-class');
+                reportClass.innerHTML = '<option value="">All Classes</option>';
+                
+                const students = JSON.parse(localStorage.getItem('students')) || [];
+                const classes = [...new Set(students.map(student => student.class))];
+                
+                classes.forEach(cls => {
+                    const option = document.createElement('option');
+                    option.value = cls;
+                    option.textContent = cls;
+                    reportClass.appendChild(option);
+                });
+            }
+
+            function loadAttendanceForm() {
+                const subject = document.getElementById('attendance-subject').value;
+                const date = document.getElementById('attendance-date').value;
+                const attendanceList = document.getElementById('attendance-list');
+                const attendanceEmpty = document.getElementById('attendance-empty');
+                
+                if (subject && date) {
+                    const students = JSON.parse(localStorage.getItem('students')) || [];
+                    const attendanceData = JSON.parse(localStorage.getItem('attendance')) || [];
+                    
+                    // Check if attendance already exists for this date and subject
+                    const existingAttendance = attendanceData.find(
+                        item => item.date === date && item.subject === subject
+                    );
+                    
+                    // Filter students by subject's class (assuming subject code contains class code)
+                    const subjectsData = JSON.parse(localStorage.getItem('subjects')) || [];
+                    const subjectData = subjectsData.find(s => s.id === subject);
+                    
+                    let filteredStudents = students;
+                    if (subjectData) {
+                        // Here you might want to implement a more sophisticated filter
+                        // This is a simplified version assuming class code is included in subject code
+                        filteredStudents = students;
+                    }
+                    
+                    // Create attendance form
+                    const attendanceStudents = document.getElementById('attendance-students');
+                    let attendanceHtml = '';
+                    
+                    filteredStudents.forEach(student => {
+                        // Check if student already has attendance record for this date
+                        let isPresent = true; // Default to present
+                        
+                        if (existingAttendance) {
+                            const studentRecord = existingAttendance.records.find(
+                                record => record.studentId === student.id
+                            );
+                            
+                            if (studentRecord) {
+                                isPresent = studentRecord.present;
+                            }
+                        }
+                        
+                        attendanceHtml += `
+                            <div class="attendance-student p-3 border rounded-md ${isPresent ? 'attendance-present' : 'attendance-absent'}" data-student-id="${student.id}">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <p class="font-semibold">${student.name}</p>
+                                        <p class="text-sm text-gray-600">${student.id} | ${student.class}</p>
+                                    </div>
+                                    <div class="flex space-x-4">
+                                        <label class="inline-flex items-center">
+                                            <input type="radio" name="attendance-${student.id}" class="attendance-radio-present form-radio text-green-500" value="present" ${isPresent ? 'checked' : ''} 
+                                            onchange="updateAttendanceStyle(this)">
+                                            <span class="ml-2">Present</span>
+                                        </label>
+                                        <label class="inline-flex items-center">
+                                            <input type="radio" name="attendance-${student.id}" class="attendance-radio-absent form-radio text-red-500" value="absent" ${!isPresent ? 'checked' : ''}
+                                            onchange="updateAttendanceStyle(this)">
+                                            <span class="ml-2">Absent</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    attendanceStudents.innerHTML = attendanceHtml;
+                    attendanceList.classList.remove('hidden');
+                    attendanceEmpty.classList.add('hidden');
+                } else {
+                    attendanceList.classList.add('hidden');
+                    attendanceEmpty.classList.remove('hidden');
+                }
+            }
+
+            function updateAttendanceRecords() {
+                const attendance = JSON.parse(localStorage.getItem('attendance')) || [];
+                const subjects = JSON.parse(localStorage.getItem('subjects')) || [];
+                const recordsTable = document.getElementById('attendance-records');
+                
+                if (attendance.length > 0) {
+                    // Sort by date (newest first)
+                    const sortedAttendance = [...attendance].sort(
+                        (a, b) => new Date(b.date) - new Date(a.date)
+                    );
+                    
+                    let tableHtml = '';
+                    
+                    sortedAttendance.forEach(record => {
+                        const subject = subjects.find(s => s.id === record.subject) || { name: record.subject };
+                        const presentCount = record.records.filter(r => r.present).length;
+                        const totalCount = record.records.length;
+                        const percentage = Math.round((presentCount / totalCount) * 100);
+                        
+                        tableHtml += `
+                            <tr class="border-b hover:bg-gray-50">
+                                <td class="py-3">${formatDate(record.date)}</td>
+                                <td class="py-3">${subject.name}</td>
+                                <td class="py-3">${presentCount}/${totalCount}</td>
+                                <td class="py-3">${percentage}%</td>
+                                <td class="py-3">
+                                    <button class="text-blue-500 hover:text-blue-700 mr-2" 
+                                        onclick="viewAttendance('${record.date}', '${record.subject}')">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <button class="text-red-500 hover:text-red-700" 
+                                        onclick="deleteAttendance('${record.date}', '${record.subject}')">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    
+                    recordsTable.innerHTML = tableHtml;
+                } else {
+                    recordsTable.innerHTML = `
+                        <tr class="text-gray-400 italic">
+                            <td colspan="5" class="py-4 text-center">No attendance records found</td>
+                        </tr>
+                    `;
+                }
+            }
+
+            function loadReportDropdowns() {
+                const reportType = document.getElementById('report-type');
+                const reportSubject = document.getElementById('report-subject');
+                const reportClass = document.getElementById('report-class');
+                
+                // Update visibility based on report type
+                reportType.addEventListener('change', function() {
+                    const value = this.value;
+                    
+                    if (value === 'student') {
+                        reportSubject.parentElement.classList.remove('hidden');
+                        reportClass.parentElement.classList.remove('hidden');
+                    } else if (value === 'subject') {
+                        reportSubject.parentElement.classList.remove('hidden');
+                        reportClass.parentElement.classList.remove('hidden');
+                    } else if (value === 'class') {
+                        reportSubject.parentElement.classList.add('hidden');
+                        reportClass.parentElement.classList.remove('hidden');
+                    }
+                });
+                
+                // Set default dates (last month)
+                const today = new Date();
+                const lastMonth = new Date(today);
+                lastMonth.setMonth(today.getMonth() - 1);
+                
+                document.getElementById('report-from').value = lastMonth.toISOString().split('T')[0];
+                document.getElementById('report-to').value = today.toISOString().split('T')[0];
+            }
+
+            function generateReport(type, subject, className, fromDate, toDate) {
+                const students = JSON.parse(localStorage.getItem('students')) || [];
+                const subjects = JSON.parse(localStorage.getItem('subjects')) || [];
+                const attendance = JSON.parse(localStorage.getItem('attendance')) || [];
+                const resultsDiv = document.getElementById('report-results');
+                
+                // Filter attendance records by date range
+                let filteredAttendance = attendance;
+                
+                if (fromDate && toDate) {
+                    filteredAttendance = filteredAttendance.filter(record => {
+                        const recordDate = new Date(record.date);
+                        return recordDate >= new Date(fromDate) && recordDate <= new Date(toDate);
+                    });
+                }
+                
+                // Further filter by subject if specified
+                if (subject) {
+                    filteredAttendance = filteredAttendance.filter(record => record.subject === subject);
+                }
+                
+                if (filteredAttendance.length === 0) {
+                    resultsDiv.innerHTML = `
+                        <div class="text-center py-6 text-gray-500">
+                            <i class="bi bi-exclamation-circle text-3xl mb-2"></i>
+                            <p>No attendance data found for the selected criteria</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let reportHtml = '';
+                
+                if (type === 'student') {
+                    // Student-wise report
+                    let filteredStudents = students;
+                    
+                    if (className) {
+                        filteredStudents = filteredStudents.filter(student => student.class === className);
+                    }
+                    
+                    reportHtml = `
+                        <h4 class="font-semibold mb-4">Student Attendance Report</h4>
+                        <div class="mb-4 text-sm">
+                            <p><strong>Period:</strong> ${formatDate(fromDate)} to ${formatDate(toDate)}</p>
+                            ${subject ? `<p><strong>Subject:</strong> ${(subjects.find(s => s.id === subject) || {name: subject}).name}</p>` : ''}
+                            ${className ? `<p><strong>Class:</strong> ${className}</p>` : ''}
+                        </div>
+                        <table class="min-w-full border">
+                            <thead>
+                                <tr class="bg-gray-100">
+                                    <th class="border p-2 text-left">Student</th>
+                                    <th class="border p-2 text-left">ID</th>
+                                    <th class="border p-2 text-left">Class</th>
+                                    <th class="border p-2 text-left">Present Days</th>
+                                    <th class="border p-2 text-left">Total Classes</th>
+                                    <th class="border p-2 text-left">Attendance %</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+                    
+                    filteredStudents.forEach(student => {
+                        let presentCount = 0;
+                        let totalClasses = 0;
+                        
+                        filteredAttendance.forEach(record => {
+                            const studentRecord = record.records.find(r => r.studentId === student.id);
+                            if (studentRecord) {
+                                totalClasses++;
+                                if (studentRecord.present) presentCount++;
+                            }
+                        });
+                        
+                        const percentage = totalClasses > 0 ? Math.round((presentCount / totalClasses) * 100) : 0;
+                        
+                        reportHtml += `
+                            <tr class="border-b hover:bg-gray-50">
+                                <td class="border p-2">${student.name}</td>
+                                <td class="border p-2">${student.id}</td>
+                                <td class="border p-2">${student.class}</td>
+                                <td class="border p-2">${presentCount}</td>
+                                <td class="border p-2">${totalClasses}</td>
+                                <td class="border p-2 ${percentage < 75 ? 'text-red-500' : 'text-green-500'}">${percentage}%</td>
+                            </tr>
+                        `;
+                    });
+                    
+                    reportHtml += '</tbody></table>';
+                    
+                } else if (type === 'subject') {
+                    // Subject-wise report
+                    let filteredSubjects = subjects;
+                    
+                    if (subject) {
+                        filteredSubjects = filteredSubjects.filter(s => s.id === subject);
+                    }
+                    
+                    reportHtml = `
+                        <h4 class="font-semibold mb-4">Subject-wise Attendance Report</h4>
+                        <div class="mb-4 text-sm">
+                            <p><strong>Period:</strong> ${formatDate(fromDate)} to ${formatDate(toDate)}</p>
+                            ${className ? `<p><strong>Class:</strong> ${className}</p>` : ''}
+                        </div>
+                        <table class="min-w-full border">
+                            <thead>
+                                <tr class="bg-gray-100">
+                                    <th class="border p-2 text-left">Subject Code</th>
+                                    <th class="border p-2 text-left">Subject Name</th>
+                                    <th class="border p-2 text-left">Classes Held</th>
+                                    <th class="border p-2 text-left">Average Attendance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+                    
+                    filteredSubjects.forEach(subject => {
+                        const subjectAttendance = filteredAttendance.filter(record => record.subject === subject.id);
+                        const totalClasses = subjectAttendance.length;
+                        
+                        let totalPresent = 0;
+                        let totalStudents = 0;
+                        
+                        subjectAttendance.forEach(record => {
+                            // Filter by class if needed
+                            let filteredRecords = record.records;
+                            
+                            if (className) {
+                                filteredRecords = filteredRecords.filter(r => {
+                                    const student = students.find(s => s.id === r.studentId);
+                                    return student && student.class === className;
+                                });
+                            }
+                            
+                            filteredRecords.forEach(student => {
+                                totalStudents++;
+                                if (student.present) totalPresent++;
+                            });
+                        });
+                        
+                        const avgAttendance = totalStudents > 0 ? Math.round((totalPresent / totalStudents) * 100) : 0;
+                        
+                        reportHtml += `
+                            <tr class="border-b hover:bg-gray-50">
+                                <td class="border p-2">${subject.code}</td>
+                                <td class="border p-2">${subject.name}</td>
+                                <td class="border p-2">${totalClasses}</td>
+                                <td class="border p-2 ${avgAttendance < 75 ? 'text-red-500' : 'text-green-500'}">${avgAttendance}%</td>
+                            </tr>
+                        `;
+                    });
+                    
+                    reportHtml += '</tbody></table>';
+                    
+                } else if (type === 'class') {
+                    // Class-wise report
+                    const classes = [...new Set(students.map(s => s.class))];
+                    let filteredClasses = classes;
+                    
+                    if (className) {
+                        filteredClasses = filteredClasses.filter(c => c === className);
+                    }
+                    
+                    reportHtml = `
+                        <h4 class="font-semibold mb-4">Class-wise Attendance Report</h4>
+                        <div class="mb-4 text-sm">
+                            <p><strong>Period:</strong> ${formatDate(fromDate)} to ${formatDate(toDate)}</p>
+                        </div>
+                        <table class="min-w-full border">
+                            <thead>
+                                <tr class="bg-gray-100">
+                                    <th class="border p-2 text-left">Class</th>
+                                    <th class="border p-2 text-left">Total Students</th>
+                                    <th class="border p-2 text-left">Average Attendance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+                    
+                    filteredClasses.forEach(cls => {
+                        const classStudents = students.filter(s => s.class === cls);
+                        
+                        let totalPresent = 0;
+                        let totalAttendance = 0;
+                        
+                        filteredAttendance.forEach(record => {
+                            classStudents.forEach(student => {
+                                const studentRecord = record.records.find(r => r.studentId === student.id);
+                                if (studentRecord) {
+                                    totalAttendance++;
+                                    if (studentRecord.present) totalPresent++;
+                                }
+                            });
+                        });
+                        
+                        const avgAttendance = totalAttendance > 0 ? Math.round((totalPresent / totalAttendance) * 100) : 0;
+                        
+                        reportHtml += `
+                            <tr class="border-b hover:bg-gray-50">
+                                <td class="border p-2">${cls}</td>
+                                <td class="border p-2">${classStudents.length}</td>
+                                <td class="border p-2 ${avgAttendance < 75 ? 'text-red-500' : 'text-green-500'}">${avgAttendance}%</td>
+                            </tr>
+                        `;
+                    });
+                    
+                    reportHtml += '</tbody></table>';
+                }
+                
+                resultsDiv.innerHTML = reportHtml;
+            }
+
+            // Helper functions for dates, IDs, etc.
+            function formatDate(dateString) {
+                if (!dateString) return '';
+                const options = { year: 'numeric', month: 'short', day: 'numeric' };
+                return new Date(dateString).toLocaleDateString(undefined, options);
+            }
+
+            function generateStudentId() {
+                const year = new Date().getFullYear();
+                const students = JSON.parse(localStorage.getItem('students')) || [];
+                
+                // Get the highest ID number
+                let maxId = 0;
+                students.forEach(student => {
+                    const idNum = parseInt(student.id.replace(/^\D+/g, ''));
+                    if (!isNaN(idNum) && idNum > maxId) {
+                        maxId = idNum;
+                    }
+                });
+                
+                // Create new ID
+                return `${year}${(maxId + 1).toString().padStart(3, '0')}`;
+            }
+
+            // Expose functions for event handlers
+            window.editStudent = function(id) {
+                const students = JSON.parse(localStorage.getItem('students')) || [];
+                const student = students.find(s => s.id === id);
+                
+                if (student) {
+                    document.getElementById('student-modal-title').textContent = 'Edit Student';
+                    document.getElementById('student-id').value = student.id;
+                    document.getElementById('student-name').value = student.name;
+                    document.getElementById('student-class').value = student.class;
+                    document.getElementById('student-email').value = student.email;
+                    document.getElementById('student-phone').value = student.phone || '';
+                    
+                    document.getElementById('student-modal').classList.remove('hidden');
+                }
+            };
+
+            window.deleteStudent = function(id) {
+                if (confirm('Are you sure you want to delete this student? This action cannot be undone.')) {
+                    let students = JSON.parse(localStorage.getItem('students')) || [];
+                    students = students.filter(student => student.id !== id);
+                    
+                    localStorage.setItem('students', JSON.stringify(students));
+                    loadStudentsTable();
+                    loadDashboard();
+                }
+            };
+
+            window.editSubject = function(id) {
+                const subjects = JSON.parse(localStorage.getItem('subjects')) || [];
+                const subject = subjects.find(s => s.id === id);
+                
+                if (subject) {
+                    document.getElementById('subject-modal-title').textContent = 'Edit Subject';
+                    document.getElementById('subject-id').value = subject.id;
+                    document.getElementById('subject-code').value = subject.code;
+                    document.getElementById('subject-name').value = subject.name;
+                    document.getElementById('subject-semester').value = subject.semester;
+                    document.getElementById('subject-professor').value = subject.professor;
+                    
+                    document.getElementById('subject-modal').classList.remove('hidden');
+                }
+            };
+
+            window.deleteSubject = function(id) {
+                if (confirm('Are you sure you want to delete this subject? This action cannot be undone.')) {
+                    let subjects = JSON.parse(localStorage.getItem('subjects')) || [];
+                    subjects = subjects.filter(subject => subject.id !== id);
+                    
+                    localStorage.setItem('subjects', JSON.stringify(subjects));
+                    loadSubjectsTable();
+                    loadSubjectsDropdown();
+                    loadDashboard();
+                }
+            };
+
+            window.deleteTimetableEntry = function(day, time) {
+                if (confirm('Are you sure you want to remove this class from the timetable?')) {
+                    let timetable = JSON.parse(localStorage.getItem('timetable')) || [];
+                    timetable = timetable.filter(entry => !(entry.day === day && entry.time === time));
+                    
+                    localStorage.setItem('timetable', JSON.stringify(timetable));
+                    loadTimetable();
+                }
+            };
+
+            window.updateAttendanceStyle = function(radio) {
+                const studentDiv = radio.closest('.attendance-student');
+                if (radio.value === 'present') {
+                    studentDiv.classList.add('attendance-present');
+                    studentDiv.classList.remove('attendance-absent');
+                } else {
+                    studentDiv.classList.add('attendance-absent');
+                    studentDiv.classList.remove('attendance-present');
+                }
+            };
+
+            window.viewAttendance = function(date, subjectId) {
+                document.getElementById('attendance-subject').value = subjectId;
+                document.getElementById('attendance-date').value = date;
+                
+                // Show attendance page
+                const pages = document.querySelectorAll('.page');
+                pages.forEach(page => {
+                    page.classList.add('hidden');
+                    page.classList.remove('active');
+                });
+                
+                document.getElementById('attendance').classList.remove('hidden');
+                document.getElementById('attendance').classList.add('active');
+                
+                // Update nav links
+                document.querySelectorAll('a[data-page]').forEach(navLink => {
+                    navLink.classList.remove('active-nav');
+                });
+                
+                document.querySelectorAll('a[data-page="attendance"]').forEach(activeLink => {
+                    activeLink.classList.add('active-nav');
+                });
+                
+                loadAttendanceForm();
+            };
+
+            window.deleteAttendance = function(date, subjectId) {
+                if (confirm('Are you sure you want to delete this attendance record? This action cannot be undone.')) {
+                    let attendance = JSON.parse(localStorage.getItem('attendance')) || [];
+                    attendance = attendance.filter(record => !(record.date === date && record.subject === subjectId));
+                    
+                    localStorage.setItem('attendance', JSON.stringify(attendance));
+                    updateAttendanceRecords();
+                    loadDashboard();
+                }
+            };
+        });
+    </script>
+<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
+	</body>
+</html>
